@@ -23,8 +23,6 @@ void zad_1(int arr[], int n, int & min, int & max)
 
 int &zad_2(int n, int arr[])
 {
-	arr[n] += 1;
-	cout << "N-ti elemnt+1: " << arr[n] << endl;
 	return arr[n];
 }
 
@@ -53,9 +51,9 @@ int main()
 	cin >> n;
 	int arr[] = { 13,21,213,121,421 };
 	cout << "Elemnt prije funkcije: " << arr[n] << endl;
-	int lvalue=0;
+	int lvalue=arr[n];
 	zad_2(n, arr) = lvalue;
-	/*lvalue += 1;*/
+	lvalue += 1;
 	cout << "Element posli funkcije: " << lvalue << endl;
 	
 }
