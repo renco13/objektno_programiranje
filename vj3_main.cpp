@@ -1,34 +1,20 @@
 #include <iostream>
 #include <vector>
-//#include "vj3_myvector.hpp"
+#include "vj3_myvector.hpp"
 using namespace std;
 
-void print(vector<int> myvector){
-	for (auto broj : myvector){
-		cout << broj << " ";
-	}
-	cout << endl;
-}
-
 int main() {
+	//1:
+	/*vector<int> myvector;
+	input_vector(myvector, 4);
+	input_in_range(myvector, 2, 13);
+	print(myvector);*/
+	
+	//2:
 	vector<int> myvector;
-	int elementi;
-	cout << "Upisite broj vektora: \n";
-	cin >> elementi;
-	cout << "Unesite elemente vektora: \n";
-	for (int i = 0; i < elementi; i++){
-		int broj;
-		cin >> broj;
-		myvector.push_back(broj);
-	}
-	print(myvector);
-	// input_vector(myvector, elementi);
-
-	// int min, max;
-	// cout << "Unesite min i max vrijednost: \n";
-	// cin >> min >> max;
-	// input_in_range(myvector, min, max);
-
-	// output_vector(myvector);
-
+	input_vector(myvector, 4);
+	vector<int> myvector_2;
+	vector<int> myvector_3;
+	input_vector(myvector_2, 4);
+	compare_vector(myvector, myvector_2, myvector_3);
 }
