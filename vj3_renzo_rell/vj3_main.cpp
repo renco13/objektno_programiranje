@@ -8,9 +8,10 @@ int main() {
 	//1:
 	//vector<int> myvector;
 	//input_vector(myvector, 4);
+	//print(myvector);
 	//input_in_range(myvector, 2, 13);
 	//print(myvector);
-	
+
 	//2:
 	//vector<int> myvector;
 	//input_vector(myvector, 4);
