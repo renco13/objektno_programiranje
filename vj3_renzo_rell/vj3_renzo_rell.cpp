@@ -37,19 +37,19 @@ void compare_vector(vector<int>& myvector, vector<int>& myvector_2, vector<int>&
 
 void sort_my_vector(vector<int>& myvector) {
 	int suma = 0;
-	int maxmax = 0;
+	//int maxmax = 0;
 	sort(myvector.begin(), myvector.end());
 	myvector.insert(myvector.begin(), 0);
-	int max = *max_element(myvector.begin(), myvector.end());
+	//int max = *max_element(myvector.begin(), myvector.end());
 	for (const int& element : myvector) {
-		if (element == max) {
-			if (maxmax < 0) {
-				maxmax++;
-			}
-		}
-		else {
+		//if (element == max) {
+		//	if (maxmax < 0) {
+		//		maxmax++;
+		//	}
+		//}
+		//else {
 			suma += element;
-		}
+		//}
 	}
 	myvector.insert(myvector.end(), suma);
 }
