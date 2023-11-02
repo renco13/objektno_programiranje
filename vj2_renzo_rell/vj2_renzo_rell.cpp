@@ -2,6 +2,14 @@
 using namespace std;
 
 //3:
+
+ //	sve funkcije unutar 3. zadatka moraju biti unutar struktura.
+	//Definirati strukturu koja opisuje vektor. Struktura se sastoji od niza int
+	//elemenata, logičke i fizičke veličine niza. Fizička veličina je inicijalno init, a
+	//kada se ta veličina napuni vrijednostima, alocira se duplo.
+	//Napisati funkcije vector_new, vector_delete, vector_push_back, vector_pop_back,
+	//vector_front, vector_back i vector_size. Funkcije su članovi strukture.
+
  //struct vektor{
  //	int *podatak;
  //	int velicina;
@@ -44,6 +52,9 @@ using namespace std;
  //	if (vek.velicina > 0)
  //		vek.velicina--;
  //}
+
+ //ubacit reference za int's
+
  //int vector_front(vektor& vek){
  //	if (vek.velicina > 0)
  //		return vek.podatak[0];
