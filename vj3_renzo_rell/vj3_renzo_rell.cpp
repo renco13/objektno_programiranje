@@ -7,13 +7,14 @@ using namespace std;
 void input_vector(vector<int> &myvector, int elementi) {
 	cout << "Unesite elemente vektora: \n";
 	int broj;
-	for (int i = 0; i < elementi; i++) {		
+	for (int i = 0; i < elementi; i++) {
 		cin >> broj;
 		myvector.push_back(broj);
 	}
 }
 
 void input_in_range(vector<int>& myvector, int min, int max) {
+	myvector.clear();
 	cout << "Unesite brojeve unutar min max: \n";
 	while (true) {
 		int broj;
@@ -48,7 +49,7 @@ void sort_my_vector(vector<int>& myvector) {
 		//	}
 		//}
 		//else {
-			suma += element;
+		suma += element;
 		//}
 	}
 	myvector.insert(myvector.end(), suma);
