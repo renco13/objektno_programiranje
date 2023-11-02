@@ -51,7 +51,7 @@ void sort_my_vector(vector<int>& myvector) {
 			suma += element;
 		}
 	}
-	cout << "Suma svih elemenata iza najveceg: " << suma << endl;
+	myvector.insert(myvector.end(), suma);
 }
 
 void remove_my_vector(vector<int>& myvector, vector<int>& myvector_2, vector<int>& myvector_3) {
