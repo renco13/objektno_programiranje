@@ -53,7 +53,11 @@ using namespace std;
  //		vek.velicina--;
  //}
 
+
+
  //ubacit reference za int's
+
+
 
  //int vector_front(vektor& vek){
  //	if (vek.velicina > 0)
