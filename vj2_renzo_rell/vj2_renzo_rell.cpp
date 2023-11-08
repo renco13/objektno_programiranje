@@ -3,183 +3,155 @@ using namespace std;
 
 //3:
 
- //	sve funkcije unutar 3. zadatka moraju biti unutar struktura.
-	//Definirati strukturu koja opisuje vektor. Struktura se sastoji od niza int
-	//elemenata, logičke i fizičke veličine niza. Fizička veličina je inicijalno init, a
-	//kada se ta veličina napuni vrijednostima, alocira se duplo.
-	//Napisati funkcije vector_new, vector_delete, vector_push_back, vector_pop_back,
-	//vector_front, vector_back i vector_size. Funkcije su članovi strukture.
+struct vektor {
+	int* podatak;
+	int velicina;
+	int kapaciteta;
 
- //struct vektor{
- //	int *podatak;
- //	int velicina;
- //	int kapaciteta;
- //};
- ////struct matrica{
- ////	int stupci;
- ////	int redci;
- ////	float **podaci;
- ////};
- //vektor vector_new(){
- //	vektor vek;
- //	vek.podatak = new int[1];
- //	vek.velicina = 0;
- //	vek.kapaciteta = 1;
- //	return vek;
- //};
- ////void unos_matrice(matrica &m){
- ////	cout << "Unesite redke u matricu: " << m.redci << endl << "Unesite stupce u matricu: " << m.stupci << endl;
- ////	for (int i = 0; i < m.redci; i++)
- ////	{
- ////		for (int j = 0; j < m.stupci; j++){
- ////			cin >> m.podaci[i][j];
- ////		}
- ////	}
- ////}
- //void vector_push_back(vektor& vek, int a){
- //	if (vek.velicina >= vek.kapaciteta){		
- //		vek.kapaciteta = vek.kapaciteta * 2;
- //		int *novi_podatak = new int[vek.kapaciteta];
- //		for (int i = 0; i < vek.velicina; i++)
- //			novi_podatak[i] = vek.podatak[i];
- //		delete[] vek.podatak;
- //		vek.podatak = novi_podatak;
- //	}
- //	vek.podatak[vek.velicina] = a;
- //	vek.velicina++;
- //}
- //void vector_pop_back(vektor& vek){
- //	if (vek.velicina > 0)
- //		vek.velicina--;
- //}
+	vektor() {
+		podatak = new int[1];
+		velicina = 0;
+		kapaciteta = 1;
+	};
+	void vector_push_back(vektor& vek, int a) {
+		if (vek.velicina >= vek.kapaciteta) {
+			vek.kapaciteta = vek.kapaciteta * 2;
+			int* novi_podatak = new int[vek.kapaciteta];
+			for (int i = 0; i < vek.velicina; i++)
+				novi_podatak[i] = vek.podatak[i];
+			delete[] vek.podatak;
+			vek.podatak = novi_podatak;
+		}
+		vek.podatak[vek.velicina] = a;
+		vek.velicina++;
+	}
+	void vector_pop_back(vektor& vek) {
+		if (vek.velicina > 0)
+			vek.velicina--;
+	}
 
+	//ubacit reference za int's
 
-
- //ubacit reference za int's
-
-
-
- //int vector_front(vektor& vek){
- //	if (vek.velicina > 0)
- //		return vek.podatak[0];
- //	return -1;
- //}
- //int vector_back(vektor& vek){
- //	if (vek.velicina > 0)
- //		return vek.podatak[vek.velicina - 1];
- //	return -1;
- //}
- //int vector_size(vektor& vek){
- //	return vek.velicina;
- //}
- //void vector_delete(vektor& vek) {
- //    delete[] vek.podatak;
- //}
+	int& vector_front(vektor& vek) {
+		if (vek.velicina > 0)
+			return vek.podatak[0];
+	}
+	int& vector_back(vektor& vek) {
+		if (vek.velicina > 0)
+			return vek.podatak[vek.velicina - 1];
+	}
+	int vector_size(vektor& vek) {
+		return vek.velicina;
+	}
+	void vector_delete(vektor& vek) {
+		delete[] vek.podatak;
+	}
+};
 
 //4:
- //struct matrica{
- //	int redci, stupci;
- //	float **podaci;
- //};
- //void unos_matrice(matrica& mat){
- //	cout << "Unesite matricu [ " << mat.redci << " " << mat.stupci << " ]" << endl;
- //	for (int i = 0; i < mat.redci; i++){
- //		for (int j = 0; j < mat.stupci; j++)
- //			cin >> mat.podaci[i][j];
- //	}
- //}
- //void generiranje_matrice(matrica& mat, float a, float b){
- //	for (int i = 0; i < mat.redci; i++){
- //		for (int j = 0; j < mat.stupci; j++)
- //			mat.podaci[i][j] = a + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / (b - a)));
- //	}
- //}
- //matrica matrice_zbroj(const matrica& mat_1, const matrica& mat_2){
- //	matrica rez;
- //	if (mat_1.redci != mat_2.redci || mat_1.stupci != mat_2.stupci){
- //		cout << "Nisu iste dimenzije.\n";
- //	}
- //	rez.redci = mat_1.redci;
- //	rez.stupci = mat_1.stupci;
- //	rez.podaci = new float*[rez.redci];
- //	for (int i = 0; i < rez.redci; i++){
- //		rez.podaci[i] = new float[rez.stupci];
- //		for (int j = 0; j < rez.stupci; j++)
- //			rez.podaci[i][j] = mat_1.podaci[i][j] + mat_2.podaci[i][j];
- //	}
- //	return rez;
- //}
- //matrica matrice_razlika(const matrica& mat_1, const matrica& mat_2){
- //	matrica rez;
- //	if (mat_1.redci != mat_2.redci || mat_1.stupci != mat_2.stupci){
- //		cout << "Nisu iste dimenzije.\n";
- //	}
- //	rez.redci = mat_1.redci;
- //	rez.stupci = mat_1.stupci;
- //	rez.podaci = new float*[rez.redci];
- //	for (int i = 0; i < rez.redci; i++){
- //		rez.podaci[i] = new float[rez.stupci];
- //		for (int j = 0; j < rez.stupci; j++)
- //			rez.podaci[i][j] = mat_1.podaci[i][j] - mat_2.podaci[i][j];
- //	}
- //	return rez;
- //}
- //matrica matrice_mnozenje(const matrica& mat_1, const matrica& mat_2){
- //	matrica rez;
- //	if (mat_1.redci != mat_2.stupci){
- //		cout << "Nisu iste dimenzije.\n";
- //	}
- //	rez.redci = mat_1.redci;
- //	rez.stupci = mat_2.stupci;
- //	rez.podaci = new float*[rez.redci];
- //	for (int i = 0; i < rez.redci; i++){
- //		rez.podaci[i] = new float[rez.stupci];
- //		for (int j = 0; j < rez.stupci; j++){
- //			rez.podaci[i][j] = 0.0;
- //			for (int k = 0; k < rez.stupci; k++)
- //				rez.podaci[i][j] += mat_1.podaci[i][k] * mat_2.podaci[k][j];
- //		}
- //	}
- //	return rez;
- //}
- //matrica matrice_trans(const matrica& mat){
- //	matrica trans;
- //	trans.redci = mat.stupci;
- //	trans.stupci = mat.redci;
- //	trans.podaci = new float *[trans.redci];
- //	for (int i = 0; i < trans.redci; i++){
- //		trans.podaci[i] = new float[trans.stupci];
- //		for (int j = 0; j < trans.stupci; j++)
- //			trans.podaci[i][j] = mat.podaci[j][i];
- //	}
- //	return trans;
- //}
- //void ispis_matrice(matrica& mat){
- //	for (int i = 0; i < mat.redci; i++){
- //		for (int j = 0; j < mat.stupci; j++)
- //			cout << mat.podaci[i][j] << " ";
- //	}
- //	cout << endl;
- //}
-
-//1:
- //void zad_1(int arr[], int n, int & min, int & max)
- //{	
- //	min = arr[0];
- //	for (int i = 0; i < n; i++)
- //	{
- //		if (arr[i] < min)
- //			min = arr[i];
- //		if (arr[i] > max)
- //			max = arr[i];
- //	}
- //}
-
-//2:
- //int &zad_2(int n, int arr[])
- //{
- //	return arr[n];
- //}
+// struct matrica{
+// 	int redci, stupci;
+// 	float **podaci;
+// };
+// void unos_matrice(matrica& mat){
+// 	cout << "Unesite matricu [ " << mat.redci << " " << mat.stupci << " ]" << endl;
+// 	for (int i = 0; i < mat.redci; i++){
+// 		for (int j = 0; j < mat.stupci; j++)
+// 			cin >> mat.podaci[i][j];
+// 	}
+// }
+// void generiranje_matrice(matrica& mat, float a, float b){
+// 	for (int i = 0; i < mat.redci; i++){
+// 		for (int j = 0; j < mat.stupci; j++)
+// 			mat.podaci[i][j] = a + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / (b - a)));
+// 	}
+// }
+// matrica matrice_zbroj(const matrica& mat_1, const matrica& mat_2){
+// 	matrica rez;
+// 	if (mat_1.redci != mat_2.redci || mat_1.stupci != mat_2.stupci){
+// 		cout << "Nisu iste dimenzije.\n";
+// 	}
+// 	rez.redci = mat_1.redci;
+// 	rez.stupci = mat_1.stupci;
+// 	rez.podaci = new float*[rez.redci];
+// 	for (int i = 0; i < rez.redci; i++){
+// 		rez.podaci[i] = new float[rez.stupci];
+// 		for (int j = 0; j < rez.stupci; j++)
+// 			rez.podaci[i][j] = mat_1.podaci[i][j] + mat_2.podaci[i][j];
+// 	}
+// 	return rez;
+// }
+// matrica matrice_razlika(const matrica& mat_1, const matrica& mat_2){
+// 	matrica rez;
+// 	if (mat_1.redci != mat_2.redci || mat_1.stupci != mat_2.stupci){
+// 		cout << "Nisu iste dimenzije.\n";
+// 	}
+// 	rez.redci = mat_1.redci;
+// 	rez.stupci = mat_1.stupci;
+// 	rez.podaci = new float*[rez.redci];
+// 	for (int i = 0; i < rez.redci; i++){
+// 		rez.podaci[i] = new float[rez.stupci];
+// 		for (int j = 0; j < rez.stupci; j++)
+// 			rez.podaci[i][j] = mat_1.podaci[i][j] - mat_2.podaci[i][j];
+// 	}
+// 	return rez;
+// }
+// matrica matrice_mnozenje(const matrica& mat_1, const matrica& mat_2){
+// 	matrica rez;
+// 	if (mat_1.redci != mat_2.stupci){
+// 		cout << "Nisu iste dimenzije.\n";
+// 	}
+// 	rez.redci = mat_1.redci;
+// 	rez.stupci = mat_2.stupci;
+// 	rez.podaci = new float*[rez.redci];
+// 	for (int i = 0; i < rez.redci; i++){
+// 		rez.podaci[i] = new float[rez.stupci];
+// 		for (int j = 0; j < rez.stupci; j++){
+// 			rez.podaci[i][j] = 0.0;
+// 			for (int k = 0; k < rez.stupci; k++)
+// 				rez.podaci[i][j] += mat_1.podaci[i][k] * mat_2.podaci[k][j];
+// 		}
+// 	}
+// 	return rez;
+// }
+// matrica matrice_trans(const matrica& mat){
+// 	matrica trans;
+// 	trans.redci = mat.stupci;
+// 	trans.stupci = mat.redci;
+// 	trans.podaci = new float *[trans.redci];
+// 	for (int i = 0; i < trans.redci; i++){
+// 		trans.podaci[i] = new float[trans.stupci];
+// 		for (int j = 0; j < trans.stupci; j++)
+// 			trans.podaci[i][j] = mat.podaci[j][i];
+// 	}
+// 	return trans;
+// }
+// void ispis_matrice(matrica& mat){
+// 	for (int i = 0; i < mat.redci; i++){
+// 		for (int j = 0; j < mat.stupci; j++)
+// 			cout << mat.podaci[i][j] << " ";
+// 	}
+// 	cout << endl;
+// }
+//
+////1:
+// void zad_1(int arr[], int n, int & min, int & max)
+// {	
+// 	min = arr[0];
+// 	for (int i = 0; i < n; i++)
+// 	{
+// 		if (arr[i] < min)
+// 			min = arr[i];
+// 		if (arr[i] > max)
+// 			max = arr[i];
+// 	}
+// }
+//
+////2:
+// int &zad_2(int n, int arr[])
+// {
+// 	return arr[n];
+// }
 
 int main()
 {
@@ -211,16 +183,16 @@ int main()
 	 //cout << "Element posli funkcije: " << lvalue << endl;
 
 	//3:
-	 //vektor vek = vector_new();
-	 //vector_push_back(vek, 1);
-	 //vector_push_back(vek, 2);
-	 //vector_push_back(vek, 4);
-	 //cout << "Front: " << vector_front(vek) << endl;
-	 //cout << "Back: " << vector_back(vek) << endl;
-	 //cout << "Size: " << vector_size(vek)<< endl;
-	 //vector_pop_back(vek);
-	 //cout << "Last element: " << vector_back(vek) << endl;
-	 //vector_delete(vek);
+	 vektor vek;
+	 vek.vector_push_back(vek, 1);
+	 vek.vector_push_back(vek, 2);
+	 vek.vector_push_back(vek, 4);
+	 cout << "Front: " << vek.vector_front(vek) << endl;
+	 cout << "Back: " << vek.vector_back(vek) << endl;
+	 cout << "Size: " << vek.vector_size(vek)<< endl;
+	 vek.vector_pop_back(vek);
+	 cout << "Last element: " << vek.vector_back(vek) << endl;
+	 vek.vector_delete(vek);
 
 	//4:
 	 //int redci, stupci;
@@ -280,4 +252,3 @@ int main()
 	 //delete[] umnozak.podaci;
 	 //delete[] transponiranje.podaci;
 }
- 	
