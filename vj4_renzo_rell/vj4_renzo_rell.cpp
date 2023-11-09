@@ -10,7 +10,7 @@ using namespace std;
 int search_str(string str, string strsub) {
 	int count = 0;
 	int location = 0;
-	while((location = str.find(strsub, location)) != string::npos) {
+	while ((location = str.find(strsub, location)) != string::npos) {
 		count++;
 		location += strsub.length();
 	}
@@ -23,7 +23,7 @@ void ispravljanje(string& str) {
 	char lik;
 	int i = 0;
 	while (i < str.length()) {
-		if (str[i] == ' ' && str[i+1] == ',') {
+		if (str[i] == ' ' && str[i + 1] == ',') {
 			lik = str[i];
 			str[i] = str[i + 1];
 			str[i + 1] = lik;
@@ -70,7 +70,7 @@ string translation(string& str) {
 	return str;
 }
 
-int main(){
+int main() {
 
 	//1:
 	//string str = "Au ovo je toliko dugi string da ja ovo ne mogu vjerovat, ovo je ludo!";
@@ -84,19 +84,19 @@ int main(){
 	//cout << str << endl;
 
 	//3:
-	//vector<string> str;
-	//int strnum = 4;
-	//string input;
-	//cout << "Unesite stringove: \n";
-	//for (int i = 0; i < strnum; i++) {
-	//	getline(cin, input);
-	//	str.push_back(reverse(input));
-	//}
-	//sort(str.begin(), str.end());
-	//cout << "Sort and reverse: \n";
-	//for (string str_rev : str) {
-	//	cout << str_rev << endl;
-	//}
+	vector<string> str;
+	int strnum = 4;
+	string input;
+	cout << "Unesite stringove: \n";
+	for (int i = 0; i < strnum; i++) {
+		getline(cin, input);
+		str.push_back(reverse(input));
+	}
+	sort(str.begin(), str.end());
+	cout << "Sort and reverse: \n";
+	for (int i = 0; i < strnum; i++) {
+		cout << str[i] << endl;
+	}
 
 	//4:
 	//string str = "What time is it?";
