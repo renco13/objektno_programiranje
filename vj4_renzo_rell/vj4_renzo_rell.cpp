@@ -7,36 +7,29 @@
 using namespace std;
 
 //1:
-//int search_str(string str, string strsub) {
-//	int count = 0;
-//	int location = 0;
-//	while((location = str.find(strsub, location)) != string::npos) {
-//		count++;
-//		location += strsub.length();
-//	}
-//	return count;
-//}
+int search_str(string str, string strsub) {
+	int count = 0;
+	int location = 0;
+	while((location = str.find(strsub, location)) != string::npos) {
+		count++;
+		location += strsub.length();
+	}
+	return count;
+}
 
 //2:
-string ispravljanje(string& str) {
+void ispravljanje(string& str) {
 	//string new;
 	char lik;
-	for (int i = 0; i < str.length(); i++) {
-		lik = str[i];
-		if (ispunct(lik)) {
-			if (i > 0 && str[i - 1] != ' ') {
-				str.insert(i, " ");
-				i++;
-			}
+	int i = 0;
+	while (i < str.length()) {
+		if (str[i] == ' ' && str[i+1] == ',') {
+			lik = str[i];
+			str[i] = str[i + 1];
+			str[i + 1] = lik;
 		}
-		else if (lik == ' ') {
-			int j = i + 1;
-			while (j < str.length() && str[j] == ' ') {
-				str.erase(j, 1);
-			}
-		}
+		i++;
 	}
-	return str;
 }
 
 //3:
@@ -44,6 +37,37 @@ string reverse(string& input) {
 	string str_rev = input;
 	reverse(str_rev.begin(), str_rev.end());
 	return str_rev;
+}
+
+//4:
+string translation(string& str) {
+	string translate;
+	string word;
+	int i = 0;
+
+	while (i < str.length()) {
+		char lik = str[i];
+
+		if (isalpha(lik)) {
+			word.push_back(lik);
+			i++;
+		}
+		else {
+			if (!word.empty()) {
+				if (word[0] == 'a' || word[0] == 'e' || word[0] == 'i' || word[0] == 'o' || word[0] == 'u' || word[0] == 'A' || word[0] == 'E' || word[0] == 'I' || word[0] == 'O' || word[0] == 'U') {
+					translate += word + "hay";
+				}
+				else {
+					translate += word.substr(1) + word[0] + "ay";
+				}
+				word.clear();
+			}
+			translate += lik;
+			i++;
+		}
+	}
+	str = translate;
+	return str;
 }
 
 int main(){
@@ -55,7 +79,7 @@ int main(){
 	//cout << "Broj ponvaljanja: " << count << endl;
 
 	//2:
-	//string str = "Ja bih ,ako ikako mogu , ovu recenicu napisala ispravno.";
+	//string str = "Ja bih ,ako ikako mogu ,ovu recenicu napisala ispravno.";
 	//ispravljanje(str);
 	//cout << str << endl;
 
@@ -75,6 +99,8 @@ int main(){
 	//}
 
 	//4:
-
+	//string str = "What time is it?";
+	//translation(str);
+	//cout << str << endl;
 
 }
