@@ -94,7 +94,7 @@ int main(){
 	//}
 	//sort(str.begin(), str.end());
 	//cout << "Sort and reverse: \n";
-	//for (string& str_rev : str) {
+	//for (string str_rev : str) {
 	//	cout << str_rev << endl;
 	//}
 
