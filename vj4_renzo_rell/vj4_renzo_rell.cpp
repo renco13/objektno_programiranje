@@ -40,13 +40,14 @@ string reverse(string& input) {
 }
 
 //4:
-string translation(string& str) {
+string translation(string str) {
 	string translate;
 	string word;
 	int i = 0;
+	char lik = str[i];
 
-	while (i < str.length()) {
-		char lik = str[i];
+		while (i < str.length()) {
+		lik = str[i];
 
 		if (isalpha(lik)) {
 			word.push_back(lik);
@@ -54,16 +55,21 @@ string translation(string& str) {
 		}
 		else {
 			if (!word.empty()) {
+				string str;
+				int i = 0;
+				while (i < word.length() && (word[i] == 'a' || word[i] == 'e' || word[i] == 'i' || word[i] == 'o' || word[i]  == 'u' || word[i] == 'A' || word[i] == 'E' || word[i] == 'I' || word[i] == 'O' || word[i] == 'U')) {
+					str.push_back(word[i]);
+					i++;
+				}
 				if (word[0] == 'a' || word[0] == 'e' || word[0] == 'i' || word[0] == 'o' || word[0] == 'u' || word[0] == 'A' || word[0] == 'E' || word[0] == 'I' || word[0] == 'O' || word[0] == 'U') {
 					translate += word + "hay";
 				}
 				else {
-					translate += word.substr(1) + word[0] + "ay";
+					translate += word.substr(i) + str + "ay";
 				}
 				word.clear();
 			}
 			translate += lik;
-			i++;
 		}
 	}
 	str = translate;
@@ -84,23 +90,22 @@ int main() {
 	//cout << str << endl;
 
 	//3:
-	vector<string> str;
-	int strnum = 4;
-	string input;
-	cout << "Unesite stringove: \n";
-	for (int i = 0; i < strnum; i++) {
-		getline(cin, input);
-		str.push_back(reverse(input));
-	}
-	sort(str.begin(), str.end());
-	cout << "Sort and reverse: \n";
-	for (int i = 0; i < strnum; i++) {
-		cout << str[i] << endl;
-	}
+	//vector<string> str;
+	//int strnum = 4;
+	//string input;
+	//cout << "Unesite stringove: \n";
+	//for (int i = 0; i < strnum; i++) {
+	//	getline(cin, input);
+	//	str.push_back(reverse(input));
+	//}
+	//sort(str.begin(), str.end());
+	//cout << "Sort and reverse: \n";
+	//for (int i = 0; i < strnum; i++) {
+	//	cout << str[i] << endl;
+	//}
 
 	//4:
-	//string str = "What time is it?";
-	//translation(str);
-	//cout << str << endl;
-
+	string str = "What time is it?";
+	translation(str);
+	cout << str << endl;
 }
