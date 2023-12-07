@@ -1,18 +1,19 @@
-#include <iostream>
-#include <string>
-#include <algorithm>
+//#include <iostream>
+//#include <string>
+//#include <algorithm>
 #include <vector>
 #include "owner.h"
+#include "pet.h"
 
-Owner(std::string& name) : name(name) {}
-Owner(Owner& newown) : name(newown.name), pets(newown.pets) {}
-~Owner() {}
+//Owner::Owner(std::string& name) : name(name) {}
+//Owner::Owner(Owner& newown) : name(newown.name), pets(newown.pets) {}
+//Owner::~Owner() {}
 
-void addpet(Pet& pet) {
-	pets.pushback(pet);
+void Owner::addpet(Pet& pet) {
+	pets.push_back(pet);
 }
 
-void action() {
+void Owner::action() {
 	for (auto& pet : pets) {
 		int random = rand() % 3;
 		switch (random) {
@@ -29,10 +30,10 @@ void action() {
 	}
 }
 
-std::string& getname() {
+std::string& Owner::getname() {
 	return name;
 }
 
-std::vector<Pet> getpet() {
+std::vector<Pet>& Owner::getpet() {
 	return pets;
 }
