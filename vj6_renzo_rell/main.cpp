@@ -6,7 +6,7 @@
 int main() {
 	std::string ownername;
 	std::cout << "Uneiste ime vlasnika: \n";
-	std::getline(cin, ownername);
+	std::getline(std::cin, ownername);
 	Owner owner(ownername);
 
 	std::string petname, pettype;
@@ -22,10 +22,10 @@ int main() {
 	owner.action();
 	ownercopy.action();
 
-	Owner& happyowner = (owner.getname() == ownercopy.getname() && owner.getpet()[0].happinespoints() > ownercopy.getpet()[0].happinespoints()) ? owner : ownercopy;
-	Pet& happypet = std::max_element(happyowner.getpet().begin(), happyowner.getpet().end(), [](Pet& pet1, Pet& pet2) {
-		return pet1.happinespoints() < pet2.happinespoints();
-		});
-	std::cout << "Vlasnik sa najsretnijim ljubimcem je: " << happyowner.getname() << endl;
-	std::cout << "Najsretniji ljubimac je: " << happypet.petname() << endl;
+	//Owner& happyowner = (owner.getname() == ownercopy.getname() && owner.getpet()[0].happinespoints() > ownercopy.getpet()[0].happinespoints()) ? owner : ownercopy;
+	//Pet& happypet = std::max_element(happyowner.getpet().begin(), happyowner.getpet().end(), [](Pet& pet1, Pet& pet2) {
+	//	return pet1.happinespoints() < pet2.happinespoints();
+	//	});
+	std::cout << "Vlasnik sa najsretnijim ljubimcem je: " << happyowner.getname() << std::endl;
+	std::cout << "Najsretniji ljubimac je: " << happypet.petname() << std::endl;
 }
