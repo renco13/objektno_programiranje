@@ -8,9 +8,12 @@
 
 class Owner {
 public:
-	Owner(std::string& name);
-	Owner(Owner& newown);
-	~Owner();
+	Owner(std::string& name) {
+		std::string& ownername = name;
+	}
+	//Owner(Owner& newown);
+
+	//~Owner();
 
 	void addpet(Pet& pet);
 	void action();
