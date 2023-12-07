@@ -7,7 +7,14 @@
 
 class Pet {
 public:
-	Pet(std::string& name, std::string& type, int hunger, int happines, bool isawake);
+	//, std::string& type, int hunger, int happines, bool isawake);
+	Pet(std::string& name, std::string& type) {
+		std::string& petname = name;
+		std::string& pettype = type;
+		hunger = 50;
+		happines = 50;
+		isawake;
+	}
 	~Pet();
 
 	void eat();
