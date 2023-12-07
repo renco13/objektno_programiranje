@@ -1,45 +1,45 @@
-#include <iostream>
-#include <string>
+//#include <iostream>
 #include "pet.h"
 
-Pet(std::string& name, std::string& type, int hunger, int happines, bool isawake) 
-	: name(name), type(type), hunger(hunger), happines(happines), isawake(isawake){}
+//Pet::Pet(std::string& name, std::string& type, int hunger, int happines, bool isawake) : name(name), type(type), hunger(hunger), happines(happines), isawake(isawake){}
 
-~Pet() {}
+//Pet::Pet(std::string& name, std::string& type) {}
+//
+//Pet::~Pet() {}
 
-void eat() {
+void Pet::eat() {
 	hunger -= 1;
 	hunger += 1;
 }
 
-void sleep() {
-	if (!awake) {
+void Pet::sleep() {
+	if (!isawake) {
 		hunger += 1;
-		happines += 1:
+		happines += 1;
 	}
 }
 
-void play() {
-	hunter += 1;
+void Pet::play() {
+	hunger += 1;
 	hunger += 1;
 }
 
-std::string& petname() {
+std::string& Pet::petname() {
 	return name;
 }
 
-std::string& pettype() {
+std::string& Pet::pettype() {
 	return type;
 }
 
-int hungerpoints() {
+int Pet::hungerpoints() {
 	return hunger;
 }
 
-int happinespoints() {
+int Pet::happinespoints() {
 	return happines;
 }
 
-bool ispetawake() {
+bool Pet::ispetawake() {
 	return isawake;
 }
