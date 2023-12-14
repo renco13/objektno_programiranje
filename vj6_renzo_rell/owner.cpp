@@ -5,16 +5,17 @@
 #include "owner.h"
 #include "pet.h"
 
-//Owner::Owner(std::string& name) : name(name) {}
-//Owner::Owner(Owner& newown) : name(newown.name), pets(newown.pets) {}
-//Owner::~Owner() {}
+Owner::Owner(const std::string& name) : name(name) {}
+Owner::Owner(Owner& other) : name(other.name), pets(other.pets) {}
+Owner::~Owner() {}
 
-void Owner::addpet(Pet& pet) {
+void Owner::addpet(const Pet& pet) { 
 	pets.push_back(pet);
 }
 
-void Owner::action() {
+void Owner::action() const {
 	for (auto& pet : pets) {
+		std::cout << "What action do you want to do?\n";
 		int random = rand() % 3;
 		switch (random) {
 		case 0:
@@ -30,10 +31,10 @@ void Owner::action() {
 	}
 }
 
-std::string& Owner::getname() {
+std::string Owner::getname() const{
 	return name;
 }
 
-std::vector<Pet>& Owner::getpet() {
+const std::vector<Pet>& Owner::getpet() const{
 	return pets;
 }
