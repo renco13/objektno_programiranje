@@ -5,20 +5,21 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include "pet.h"
 
 class Owner {
 public:
-	Owner(std::string& name) {
+	Owner(const std::string& name); /*{
 		std::string& ownername = name;
-	}
-	//Owner(Owner& newown);
+	}*/
+	Owner(Owner& other);
 
-	//~Owner();
+	~Owner();
 
-	void addpet(Pet& pet);
-	void action();
-	std::string& getname();
-	std::vector<Pet>& getpet();
+	void addpet(const Pet& pet);
+	void action() const;
+	std::string getname() const;
+	const std::vector<Pet>& getpet() const;
 
 private:
 	std::string name;
