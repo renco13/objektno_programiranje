@@ -18,8 +18,10 @@ public:
 
 	void addpet(const Pet& pet);
 	void action() const;
-	std::string getname() const;
+	const std::string getname() const;
 	const std::vector<Pet>& getpet() const;
+	const Owner& happyowner() const;
+	const Pet& happypet() const;
 
 private:
 	std::string name;
