@@ -16,11 +16,11 @@ Boss::Boss(const std::string& name, int health, int damage, const std::string& w
 }
 
 void Boss::attack() const {
-    std::cout << "Boss attacks with: " << w << " and deals " << d << " damage." << std::endl;
+    std::cout << "Boss attacks with -> " << w << ", and deals -> " << d << " damage." << std::endl;
 }
 
 void Boss::display_info() const {
-    std::cout << "Boss: " << n << " Health: " << h << " Damage: " << d << " Weapon: " << w << std::endl;
+    std::cout << "Boss: " << n << std::endl << "Health: " << h << std::endl << "Damage: " << d << std::endl << "Weapon: " << w << std::endl;
 }
 
 Monster::Monster(const std::string& name, int health, int damage, const std::string& ability) : Enemy(name, health, damage), a(ability) {
@@ -30,10 +30,9 @@ Monster::Monster(const std::string& name, int health, int damage, const std::str
 }
 
 void Monster::attack() const {
-    std::cout << "Monster attacks with: " << a << " and deals " << d << " damage." << std::endl;
+    std::cout << "Monster attacks with -> " << a << ",and deals -> " << d << " damage." << std::endl;
 }
-
+    
 void Monster::display_info() const {
-    std::cout << "Monster: " << n << " Health: " << h << " Damage: " << d << " Ability: " << a << std::endl;
+    std::cout << "Monster: " << n << std::endl << "Health: " << h << std::endl << "Damage: " << d << std::endl << "Ability: " << a << std::endl;
 }
-
