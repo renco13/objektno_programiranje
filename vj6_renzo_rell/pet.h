@@ -3,13 +3,14 @@
 #define pet_h
 
 #include <iostream>
+#include <vector>
 #include <string>
 
 class Pet {
 public:
-	//, std::string& type, int hunger, int happines, bool isawake);
-	Pet(std::string& name, std::string& type, int hunger, int happines, bool isawake) : name(name), type(type), hunger(50), happines(50), isawake(true) {}
-	//~Pet();
+	Pet(const std::string& name, const std::string& type, int hunger, int happiness, bool isawake); /*: name(name), type(type), hunger(50), happines(50), isawake(true) {}*/
+	Pet(const Pet& other);
+	~Pet();
 
 	void eat() const;
 	void sleep() const;
@@ -17,14 +18,17 @@ public:
 	std::string const& petname() const;
 	std::string const& pettype() const;
 	int hungerpoints() const;
+	//int getinithappy() const;
 	int happinespoints() const;
 	bool ispetawake() const;
+	const std::vector<int>& gethappihistory() const;
 
 private:
 	std::string name;
 	std::string type;
 	mutable int hunger;
-	mutable int happines;
+	mutable int happiness;
+	mutable std::vector<int> happihistory;
 	bool isawake;
 };
 
