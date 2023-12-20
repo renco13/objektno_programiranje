@@ -20,8 +20,11 @@ public:
 	void action() const;
 	const std::string getname() const;
 	const std::vector<Pet>& getpet() const;
-	const Owner& happyowner() const;
+	//const Owner& happyowner() const;
+	Owner() = default;
 	const Pet& happypet() const;
+	void printdetails() const;
+	int happypoints() const;
 
 private:
 	std::string name;
