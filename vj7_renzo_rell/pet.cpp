@@ -1,8 +1,8 @@
 //#include <iostream>
 #include "pet.h"
 
-Pet::Pet(const std::string& name, const std::string& type, int hunger, int happiness, bool isawake) : name(name), type(type), hunger(hunger), happiness(happiness), isawake(isawake), happihistory{ happiness } {}
-Pet::Pet(const Pet& other) : name(other.name), type(other.type), hunger(other.hunger), happiness(other.happiness), isawake(other.isawake), happihistory{ happiness } {} 
+Pet::Pet(const std::string& name, const std::string& type, int hunger, int happiness, bool isawake) : name(name), type(type), hunger(hunger), happiness(happiness), isawake(isawake), happihistory{ happiness }, portioneaten(0) {}
+Pet::Pet(const Pet& other) : name(other.name), type(other.type), hunger(other.hunger), happiness(other.happiness), isawake(other.isawake),  happihistory{ happiness }, portioneaten(0) {} 
 Pet::~Pet(){}
 
 void Pet::eat() const {
@@ -82,6 +82,10 @@ const std::vector<int>& Pet::gethappihistory() const {
 	return happihistory;
 }
 
+int Pet::getportions() const{
+	return portioneaten;
+}
+
 bool Pet::operator==(const Pet& other) const {
 	return name == other.name && type == other.type && hunger == other.hunger && happiness == other.happiness && isawake == other.isawake;
 }
@@ -118,7 +122,8 @@ bool Pet::operator>=(const Pet& other) const {
 }
 
 Pet& Pet::operator++() {
-	hunger++;
+	hunger -= 20;
+	portioneaten++;
 	return *this;
 }
 
@@ -129,6 +134,6 @@ Pet Pet::operator++(int) {
 }
 
 std::ostream& operator<<(std::ostream & os, const Pet & pet) {
-	os << "Pet: " << pet.name << std::endl << "Type: " << pet.type << std::endl << "Hunger: " << pet.hunger << std::endl << "Happiness: " << pet.happiness << std::endl << "Awake: " << std::boolalpha << pet.isawake << std::endl;
+	os << "Pet: " << pet.name << std::endl << "Type: " << pet.type << std::endl << "Hunger: " << pet.hunger << std::endl << "Happiness: " << pet.happiness << std::endl << "Portions eaten: " << pet.portioneaten << std::endl << "Awake: " << std::boolalpha << pet.isawake << std::endl;
 	return os;
 }
