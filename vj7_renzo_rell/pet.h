@@ -22,6 +22,7 @@ public:
 	bool ispetawake() const;
 	const std::vector<int>& gethappihistory() const;
 
+	int getportions() const;
 	bool operator==(const Pet& other) const;
 	bool operator!=(const Pet& other) const;
 	Pet& operator=(const Pet& other);
@@ -40,6 +41,7 @@ private:
 	mutable int happiness;
 	mutable std::vector<int> happihistory;
 	bool isawake;
+	int portioneaten;
 };
 
 #endif
