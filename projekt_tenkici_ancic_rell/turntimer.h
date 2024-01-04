@@ -2,18 +2,19 @@
 #ifndef TURNTIMER_H
 #define TURNTIMER_H
 
+#include <chrono>
+#include <thread>
+
 class TurnTimer {
 public:
-	TurnTimer(float duration);
+	TurnTimer(double seconds);
 	void Start();
-	void Stop();
-	bool Update();
-	float GetTime() const;
+	bool IsTimeUp() const;
+	double GetRemainingTime() const;
 
 private:
-	float timerDuration;
-	float timer;
-	bool isRunning;
+	std::chrono::steady_clock::time_point startTime;
+	std::chrono::duration<double> turnDuration;
 };
 
 #endif
