@@ -5,38 +5,42 @@
 #include <string>
 
 //Kreiranje tenka
-Tank::Tank(float x, float y, Color color, float speed, float shootSpeed)
+Tank::Tank(float x, float y, Color color, float speed, float aimSpeed,float shootSpeed, int alive)
     : body({ x, y, 40, 40 }), turret({ x + 20, y, 10, 30 }),
-    tankColor(color), tankSpeed(speed), shootSpeed(shootSpeed),
-    projectile(turret.x + turret.width, turret.y + turret.height / 2, 400.0f, tankColor),
-    turnTime(0.0f), state(Tank::TankState::idle),
-    moveTurnDuration(10.0f), shootTurnDuration(10.0f), extraTurnDuration(5.0f), remainingTime(0.0f),
-    isTurnActive(false) {}
+    tankColor(color), tankSpeed(speed), aimSpeed(aimSpeed), shootSpeed(shootSpeed), tankAlive(alive),
+    projectile(turret.x + turret.width, turret.y + turret.height / 2, 400.0f, tankColor) {}
+    //state(Tank::TankState::idle) {}
+    //turnTime(0.0f), state(Tank::TankState::idle) {}
+    //moveTurnDuration(10), shootTurnDuration(10), extraTurnDuration(5), remainingTime(0.0f),
+    //isTurnActive(false) {}
 
 
 void Tank::Update() {
 	//Bilo kakve akcije u vezi tenkica idu ovdje
-	//Move(KEY_A, KEY_D);
-    //Move(KEY_LEFT, KEY_RIGHT);
-    if (state != TankState::idle) {
-        if (turnTime.Update()) {
-            switch (state) {
-            case TankState::moving:
-                state = TankState::shooting;
-                turnTime = TurnTimer(shootTurnDuration);
-                break;
-            case TankState::shooting:
-                state = TankState::waiting;
-                turnTime = TurnTimer(extraTurnDuration);
-                break;
-            case TankState::waiting:
-                EndTurn();
-                break;
-            default:
-                break;
-            }
-        }
-    }
+	Move(KEY_A, KEY_D);
+    Aim(KEY_W, KEY_S);
+    Shoot(KEY_SPACE);
+
+    //if (state != TankState::idle) {
+    //    if (turnTime.Update()) {
+    //        switch (state) {
+    //        case TankState::moving:
+    //            state = TankState::shooting;
+    //            turnTime = TurnTimer(shootTurnDuration);
+    //            break;
+    //        case TankState::shooting:
+    //            state = TankState::waiting;
+    //            turnTime = TurnTimer(extraTurnDuration);
+    //            break;
+    //        case TankState::waiting:
+    //            EndTurn();                                                                
+    //            break;
+    //        default:
+    //            break;
+    //        }
+    //    }
+    //}
+
 }
 
 void Tank::Draw() {
@@ -45,9 +49,10 @@ void Tank::Draw() {
     DrawRectangleRec(turret, tankColor);
 
     //graficki prikaz preostalog vremena u tvojem potezu
-    std::string timeString = std::to_string(turnTime.GetTime());
-    const char* timeChar = timeString.c_str();
-    DrawText(timeChar, 10, 10, 20, WHITE);
+    //std::string timeString = std::to_string(turnTime.GetTime());
+    //const char* timeChar = timeString.c_str();
+    //DrawText(timeChar, 10, 10, 20, WHITE);
+
 }
 
 void Tank::Move(int moveLeft, int moveRight) {
@@ -61,6 +66,15 @@ void Tank::Move(int moveLeft, int moveRight) {
     turret.x = body.x + 15;
 }
  
+void Tank::Aim(int moveUp, int moveDown) {
+    if (IsKeyDown(moveUp) && turret.y > 0) {
+        turret.y -= aimSpeed * GetFrameTime();
+        if (IsKeyDown(moveDown) && turret.y + turret.height < GetScreenHeight()) {
+            turret.y += aimSpeed * GetFrameTime();
+    }
+    }
+}
+
 void Tank::Shoot(int shootKey) {
     //pucanje tenka
     if (IsKeyPressed(shootKey) && !projectile.IsActive()) {
@@ -69,28 +83,32 @@ void Tank::Shoot(int shootKey) {
     projectile.Update();
 }
 
+int Tank::IsAlive() {
+    return  --tankAlive;
+}
+
 void Tank::DrawProjectile() {
     //poziv za graficki prikaz projektila
     projectile.Draw();
 }
 
-void Tank::StartTurn() {
-    //timer za vremensko ogranicenje u tvojem potezu
-    state = TankState::moving;
-    turnTime = TurnTimer(moveTurnDuration);
-    remainingTime = moveTurnDuration;
-    isTurnActive = true;
-}
-
-void Tank::EndTurn() {
-    state = TankState::idle;
-    turnTime = TurnTimer(0.0f);
-}
-
-bool Tank::IsTurnActive() const {
-    return isTurnActive;
-}
-
-float Tank::GetRemainingTime() const {
-    return turnTime.GetTime();
-}
+//void Tank::StartTurn() {
+//    //timer za vremensko ogranicenje u tvojem potezu
+//    state = TankState::moving;
+//    turnTime = TurnTimer(moveTurnDuration);
+//    remainingTime = moveTurnDuration;
+//    isTurnActive = true;
+//}
+//
+//void Tank::EndTurn() {
+//    state = TankState::idle;
+//    turnTime = TurnTimer(0.0f);
+//}
+//
+//bool Tank::IsTurnActive() const {
+//    return isTurnActive;
+//}
+//
+//float Tank::GetRemainingTime() const {
+//    return turnTime.GetTime();
+//}
