@@ -1,31 +1,20 @@
 #include "raylib.h"
 #include "turntimer.h"
 
-TurnTimer::TurnTimer(float duration)
-	: timerDuration(duration), timer(0.0f), isRunning(false) {}
+TurnTimer::TurnTimer(double seconds)
+	: turnDuration(seconds) {}
 
 void TurnTimer::Start() {
-	isRunning = true;
-	timer = timerDuration;
+	startTime = std::chrono::steady_clock::now();
 }
 
-void TurnTimer::Stop() {
-	isRunning = false;
-	timer = 0.0f;
+bool TurnTimer::IsTimeUp() const {
+	auto currentTime = std::chrono::steady_clock::now();
+	return (currentTime - startTime) >= turnDuration;
 }
 
-bool TurnTimer::Update() {
-	if (isRunning) {
-		timer -= GetFrameTime();
-		if (timer <= 0.0f) {
-			timer = 0.0f;
-			isRunning = false;
-			return true;
-		}
-	}
-	return false;
-}
-
-float TurnTimer::GetTime() const {
-	return timer;
+double TurnTimer::GetRemainingTime() const {
+	auto currentTime = std::chrono::steady_clock::now();
+	auto elapsed = currentTime - startTime;
+	double remainingTime = std::max(0.0, turnDuration.count() - elapsed.count());
 }
