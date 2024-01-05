@@ -17,4 +17,5 @@ double TurnTimer::GetRemainingTime() const {
 	auto currentTime = std::chrono::steady_clock::now();
 	auto elapsed = currentTime - startTime;
 	double remainingTime = std::max(0.0, turnDuration.count() - elapsed.count());
+	return remainingTime;
 }
