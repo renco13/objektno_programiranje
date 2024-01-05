@@ -6,15 +6,16 @@
 
 class Projectile {
 public:
-	Projectile(float x, float y, float speed , Color color);
+	Projectile(Vector2 position, Vector2 speed, Color color);
 	void Update();
 	void Draw();
 	bool IsActive() const;
-	
+
 private:
-	Rectangle body;
+	Rectangle projectileBody;
+	Vector2 projectilePosition;
+	Vector2 projectileSpeed;
 	Color projectileColor;
-	float projectileSpeed;
 	bool active;
 };
 
