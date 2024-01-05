@@ -1,23 +1,24 @@
 #include "projectile.h"
 
-Projectile::Projectile(float x, float y, float speed, Color color)
-	: body({ x, y, 10, 10 }), projectileSpeed(speed), projectileColor(color), active(true) {}
+Projectile::Projectile(Vector2 position, Vector2 speed, Color color)
+	: projectileBody({ position.x, position.y, 10, 10 }), 
+	projectilePosition(position), projectileSpeed(speed), projectileColor(color), active(true) {}
 
 void Projectile::Update() {
 	if (active) {
-		body.x += projectileSpeed * GetFrameTime();
+		projectileBody.x += projectileSpeed.x * GetFrameTime();
 	}
-	if (body.x > GetScreenWidth()) {
+	if (projectileBody.x > GetScreenWidth()) {
 		active = false;
 	}
 }
 
 void Projectile::Draw() {
 	if (active) {
-		DrawRectangleRec(body, projectileColor);
+		DrawRectangleRec(projectileBody, RED);
 	}
 }
 
 bool Projectile::IsActive() const {
 	return active;
-}
+}	
