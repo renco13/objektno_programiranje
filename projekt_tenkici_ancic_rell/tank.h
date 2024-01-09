@@ -9,10 +9,19 @@
 
 class Tank {
 public:
-	Tank(Vector2 position, Vector2 size, 
+	Tank(Vector2 position, Vector2 size,
 		Vector2 aimCurrent, int aimAngleCurrent, int aimPowerCurrent,
-		Vector2 aimPrevious, int aimPreviousAngle, int aimPowerPrevious, 
-		Vector2 impactArea, bool isPlayerTwo, bool alive);
+		Vector2 aimPrevious, int aimPreviousAngle, int aimPowerPrevious,
+		Vector2 impactArea, bool isPlayerTwo, bool alive, Color color);
+	
+	void UpdateAiming();
+	void Shoot();
+
+	void TankDraw();
+	void TankDrawAiming();
+	Vector2 TankGetAimingPoint() const;
+	float TankGetAimingAngle() const;
+	float TankGetAimingPower() const;
 
 private:
 	//Rectangle tankBody;
@@ -26,6 +35,8 @@ private:
 	int tankAimPowerPrevious;
 	bool tankIsPlayerTwo;
 	bool tankIsAlive;
+	Color tankColor;
+	bool tankIsShooting;
 };
 
 
