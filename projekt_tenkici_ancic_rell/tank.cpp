@@ -3,18 +3,73 @@
 #include "turntimer.h"
 #include <iostream>
 #include <string>
- 
-Tank::Tank(Vector2 position, Vector2 size, 
+
+Tank::Tank(Vector2 position, Vector2 size,
 	Vector2 aimCurrent, int aimAngleCurrent, int aimPowerCurrent,
-	Vector2 aimPrevious, int aimPreviousAngle, int aimPowerPrevious, 
-	Vector2 impactArea, bool isPlayerTwo, bool alive) 
-	: tankPosition(position), tankSize(size), 
-	tankAimCurrent(aimCurrent), tankAimAngleCurrent(aimAngleCurrent), tankAimPowerCurrent(aimPowerCurrent), 
+	Vector2 aimPrevious, int aimPreviousAngle, int aimPowerPrevious,
+	Vector2 impactArea, bool isPlayerTwo, bool alive, Color color)
+	: tankPosition(position), tankSize(size),
+	tankAimCurrent(aimCurrent), tankAimAngleCurrent(aimAngleCurrent), tankAimPowerCurrent(aimPowerCurrent),
 	tankAimPrevious(aimPrevious), tankAimAnglePrevious(aimPreviousAngle), tankAimPowerPrevious(aimPowerPrevious),
-	tankIsPlayerTwo(isPlayerTwo), tankIsAlive(true) {}
-	/*tankBody({position.x, position.y, 40, 40}),*/
+	tankIsPlayerTwo(isPlayerTwo), tankIsAlive(true), tankColor(color) {}
 
+void Tank::TankDraw() {
+	Rectangle tankBody = {
+		tankPosition.x - tankSize.x / 2, tankPosition.y - tankSize.y / 2, tankSize.x, tankSize.y };
+	DrawRectangleRec(tankBody, tankColor);
+	TankDrawAiming();
+}
 
+void Tank::TankDrawAiming() {
+	Vector2 t1 = {
+		tankPosition.x - tankSize.x / 4, tankIsPlayerTwo ? tankPosition.y + tankSize.y / 4 : tankPosition.y - tankSize.y / 4 };
+	Vector2 t2 = {
+		tankPosition.x + tankSize.x / 4, tankIsPlayerTwo ? tankPosition.y - tankSize.y / 4 : tankPosition.y + tankSize.y / 4 };
+	DrawTriangle(t1, t2, tankAimPrevious, GRAY);
+	DrawTriangle(t1, t2, tankAimCurrent, tankIsPlayerTwo ? PINK : GREEN);
+}
+
+void Tank::UpdateAiming() {
+	Vector2 mousePosition = GetMousePosition();
+	tankAimCurrent = mousePosition;
+
+	//if (IsKeyDown(KEY_W)) {
+	//	tankAimCurrent.y -= 20.0f;
+	//}
+	//else if (IsKeyDown(KEY_S)) {
+	//	tankAimCurrent.y += 20.0f;
+	//}
+
+	if (mousePosition.y <= tankPosition.y) {
+		if (tankIsPlayerTwo && mousePosition.x >= tankPosition.x) {
+			tankAimPowerCurrent = sqrt(pow(tankPosition.x - mousePosition.x, 2) + pow(tankPosition.y - mousePosition.y, 2));
+			tankAimAngleCurrent = asin((tankPosition.y - mousePosition.y) / tankAimPowerCurrent) * RAD2DEG;
+		}
+	}
+
+	//tankAimCurrent = tankPosition;
+}
+
+void Tank::Shoot() {
+	if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && !tankIsShooting) {
+		//tankAimPowerCurrent = Vector2Distance(tankAimCurrent, tankPosition);
+		tankAimAngleCurrent = atan2(tankAimCurrent.y - tankPosition.y, tankAimCurrent.x - tankPosition.x) * RAD2DEG;
+		tankIsShooting = true;
+
+	}
+}
+
+Vector2 Tank::TankGetAimingPoint() const {
+	return tankAimCurrent;
+}
+
+float Tank::TankGetAimingAngle() const {
+	return atan2(tankAimPrevious.y - tankAimCurrent.y, tankAimPrevious.x - tankAimCurrent.x) * RAD2DEG;
+}
+
+float Tank::TankGetAimingPower() const {
+	return tankAimPowerCurrent;
+}
 
 ////Kreiranje tenka
 //Tank::Tank(float x, float y, Color color, float speed, float aimSpeed, float shootSpeed, int alive)
