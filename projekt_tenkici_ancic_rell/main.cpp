@@ -10,8 +10,8 @@ void GameQuit(); //trigger za izlazak iz igre
 void GameStart(); //trigger za graficko pokretanje igre
 void GameUpdatePlayFrame(); //trigger za update grafickog crtnja igre ili pokrecanja igra 
 
-const int screenWidth = 854;
-const int screenHeight = 480;
+const int screenWidth = 1280;
+const int screenHeight = 720;
 
 int main(void)
 {
@@ -19,7 +19,18 @@ int main(void)
 
     InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
 
+    //GameStart();
+
     //Kreiranje tenka
+
+    Tank tank1({ screenWidth / 4 - 20, screenHeight / 2 - 20 }, { 40, 40 }, 
+        {0, 0}, 0, 0,
+        {0, 0}, 0, 0,
+        {0, 0}, false, true, YELLOW);
+    Tank tank2({ 3 * screenWidth / 4 - 20, screenHeight / 2 - 20 }, { 40, 40 },
+        { 0, 0 }, 0, 0,
+        { 0, 0 }, 0, 0,
+        { 0, 0 }, false, true, BLUE);
 
     //Staro Kreiranje tenka
     //Tank tank1(screenWidth / 4 - 20, screenHeight / 2 - 20, YELLOW, 200.0f, 100.0f, 400.0f, 3);
@@ -49,7 +60,7 @@ int main(void)
         //tank2.Update();
 
         //Graficki prikaz na ekranu
-        
+
         //BeginDrawing();
         //ClearBackground(BLACK);
 
@@ -125,6 +136,21 @@ int main(void)
         //}
 
         //EndDrawing();
+
+        //GameUpdatePlayFrame();
+
+        tank1.UpdateAiming();
+        //tank2.UpdateAiming();
+
+        BeginDrawing();
+        ClearBackground(BLACK);
+
+        tank1.TankDraw();
+        tank2.TankDraw();
+
+
+        EndDrawing();
+
     }
 
     CloseWindow();
@@ -132,9 +158,19 @@ int main(void)
     return 0;
 }
 
-void GameStart() {
-    Tank tank1();
-    Tank tank2();
-
-
-}
+//void GameStart() {
+//    Tank tank1();
+//    Tank tank2();
+//
+//    //GenerateTerrain();
+//
+//}
+//
+//void GameUpdateStartPlayFrame() {
+//    BeginDrawing();
+//    ClearBackground(BLACK);
+//    
+//    for (int i = 0; i < 2; i++) {
+//        
+//    }
+//}
