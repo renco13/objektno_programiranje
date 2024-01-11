@@ -3,15 +3,162 @@
 #include "tank.h"
 #include "projectile.h"
 #include "turntimer.h"
+#include "cmath"
 
-void GameMenu(); //trigger za glavni meni
-void GameSettings(); //trigger za postavke
-void GameQuit(); //trigger za izlazak iz igre
-void GameStart(); //trigger za graficko pokretanje igre
-void GameUpdatePlayFrame(); //trigger za update grafickog crtnja igre ili pokrecanja igra 
+//void GameMenu(); //trigger za glavni meni
+//void GameSettings(); //trigger za postavke
+//void GameQuit(); //trigger za izlazak iz igre
+//void GameStart(); //trigger za graficko pokretanje igre
+//void GameUpdatePlayFrame(); //trigger za update grafickog crtnja igre ili pokrecanja igra 
 
 const int screenWidth = 1280;
 const int screenHeight = 720;
+
+class Terrain {
+public:
+    Terrain() {
+        map = nullptr;
+    }
+
+    ~Terrain() {
+        if (map != nullptr) {
+            delete[] map;
+            map = nullptr;
+        }
+    }
+
+    virtual bool OnUserUpdate(float fElaspedTime) {
+        //ponovno generiranje zemlje
+        if (IsKeyPressed(KEY_M))
+            terrainCreate();
+
+        //crtanje neba
+        for (int x = 0; x < screenWidth; x++) {
+            for (int y = 0; y < screenHeight; y++) {
+                switch (map[(y)*terrainWidth + (x)]) {
+                case 0:
+                    DrawPixel(x, y, SKYBLUE);
+                    break;
+                case 1:
+                    DrawPixel(x, y, DARKGREEN);
+                    break;
+                }
+            }
+        }
+
+        return true;
+    }
+    //void UpdateTerrain(float fElapsedTime) {
+    //    OnUserUpdate(fElapsedTime);
+    //}
+private:
+    int terrainWidth = 1280;
+    int terrainHeight = 720;
+    unsigned char* map = nullptr;
+
+    virtual bool OnUserCreate() {
+        if (map != nullptr) {
+            delete[] map;
+            map = nullptr;
+        }
+
+        map = new unsigned char[terrainWidth * terrainHeight];
+        memset(map, 0, terrainWidth * terrainHeight * sizeof(unsigned char));
+        terrainCreate();
+
+        return true;
+    }
+
+    //virtual bool OnUserUpdate(float fElaspedTime) {
+    //    //ponovno generiranje zemlje
+    //    if (IsKeyPressed(KEY_M))
+    //        terrainCreate();
+    //    
+    //    //crtanje neba
+    //    for (int x = 0; x < screenWidth; x++) {
+    //        for (int y = 0; y < screenHeight; y++) {
+    //            switch (map[(y)*terrainWidth + (x)]) {
+    //            case 0:
+    //                DrawPixel(x, y, SKYBLUE);
+    //                break;
+    //            case 1:
+    //                DrawPixel(x, y, DARKGREEN);
+    //                break;
+    //            }
+    //        }
+    //    }
+
+    //    return true;
+    //}
+
+    void terrainCreate() {
+        float* fSurface = new float[terrainWidth];
+        float* fNoiseSeed = new float[terrainWidth];
+
+        for (int i = 0; i < terrainWidth; i++) {
+            fNoiseSeed[i] = (float)rand() / (float)RAND_MAX;
+        }
+
+        fNoiseSeed[0] = 0.5f;
+        PerlinNoise1D(terrainWidth, fNoiseSeed, 8, 2.0f, fSurface);
+
+        for (int x = 0; x < terrainWidth; x++) {
+            for (int y = 0; y < terrainHeight; y++) {
+                if (y >= fSurface[x] * terrainHeight) {
+                    map[y * terrainWidth + x] = 1;
+                }
+                else {
+                    map[y * terrainWidth + x] = 0;
+                }
+            }
+        }
+        
+        delete[] fSurface;
+        delete[] fNoiseSeed;
+    }
+
+    void PerlinNoise1D(int nCount, float* fSeed, int nOctaves, float fBias, float* fOutput)
+    {
+        // Used 1D Perlin Noise
+        for (int x = 0; x < nCount; x++)
+        {
+            float fNoise = 0.0f;
+            float fScaleAcc = 0.0f;
+            float fScale = 1.0f;
+
+            for (int o = 0; o < nOctaves; o++)
+            {
+                int nPitch = nCount >> o;
+                int nSample1 = (x / nPitch) * nPitch;
+                int nSample2 = (nSample1 + nPitch) % nCount;
+                float fBlend = (float)(x - nSample1) / (float)nPitch;
+                float fSample = (1.0f - fBlend) * fSeed[nSample1] + fBlend * fSeed[nSample2];
+                fScaleAcc += fScale;
+                fNoise += fSample * fScale;
+                fScale = fScale / fBias;
+            }
+
+            // Scale to seed range
+            fOutput[x] = fNoise / fScaleAcc;
+        }
+    }
+};
+//const int terrainWidth = screenWidth;
+//const int terrainHeight = screenHeight / 2;
+//
+//float perlinNoise[terrainWidth];
+//
+//void TerrainGenerate() {
+//    for (int i = 0; i < terrainWidth; i++) {
+//        perlinNoise[i] = (float)GetRandomValue(0, terrainHeight) / (float)terrainHeight;
+//    }
+//}
+//
+//void TerrainDraw() {
+//    for (int i = 0; i < terrainWidth - 1; i++) {
+//        DrawLine(i, screenHeight - perlinNoise[i] * screenHeight, i + 1, screenHeight - perlinNoise[i + 1] * screenHeight, GREEN);
+//    }
+//}
 
 int main(void)
 {
@@ -30,7 +177,10 @@ int main(void)
     Tank tank2({ 3 * screenWidth / 4 - 20, screenHeight / 2 - 20 }, { 40, 40 },
         { 0, 0 }, 0, 0,
         { 0, 0 }, 0, 0,
-        { 0, 0 }, false, true, BLUE);
+        { 0, 0 }, false, true, GREEN);
+
+    //TerrainGenerate();
+    Terrain terrain;
 
     //Staro Kreiranje tenka
     //Tank tank1(screenWidth / 4 - 20, screenHeight / 2 - 20, YELLOW, 200.0f, 100.0f, 400.0f, 3);
@@ -43,111 +193,18 @@ int main(void)
 
     while (!WindowShouldClose())
     {
-        //Kontrole za micanje tenkova livo desno
-        //tank1.Move(KEY_A, KEY_D);
-        //tank2.Move(KEY_LEFT, KEY_RIGHT);
-
-        ////Kontrole za ciljanje
-        //tank1.Aim(KEY_W, KEY_S);
-        //tank2.Aim(KEY_UP, KEY_DOWN);
-
-        ////Kontrole za pucanje tenkova
-        //tank1.Shoot(KEY_SPACE);
-        //tank2.Shoot(KEY_SPACE);
-
-        ////Updatea tenkove i ciji je red
-        //tank1.Update();
-        //tank2.Update();
-
-        //Graficki prikaz na ekranu
-
-        //BeginDrawing();
-        //ClearBackground(BLACK);
-
-        ////prikaz tenkova
-        //tank1.Draw();
-        //tank2.Draw();
-
-        ////prikaz raketa
-        //tank1.DrawProjectile();
-        //tank2.DrawProjectile();
-
-        //while (true) {
-        //    while (tank1.IsAlive() <= 0 || tank2.IsAlive() <= 0) {
-        //
-        //        //Kontrole za trenutacno aktivni tenk ili tenk ciji je potez trenurtacno
-        //        //if (tank1.IsTurnActive()) {
-        //        //    tank1.Move(KEY_A, KEY_D);
-        //        //    tank1.Shoot(KEY_W);
-        //        //}
-        //        //else if (tank2.IsTurnActive()) {
-        //        //    tank2.Move(KEY_LEFT, KEY_RIGHT);
-        //        //    tank2.Shoot(KEY_UP);
-        //        //}
-        //
-        //        turnTimer.Start();
-        //
-        //        if (activeTankTurn == 1) {
-        //            tank1.Move(KEY_A, KEY_D);
-        //            tank1.Shoot(KEY_W);
-        //        }
-        //        else if (activeTankTurn == 2) {
-        //            tank2.Move(KEY_LEFT, KEY_RIGHT);
-        //            tank2.Shoot(KEY_UP);
-        //        }
-        //
-        //        ////Kontrole za micanje tenkova livo desno
-        //        //tank1.Move(KEY_A, KEY_D);
-        //        //tank2.Move(KEY_LEFT, KEY_RIGHT);
-        //
-        //        ////Kontrole za pucanje tenkova
-        //        //tank1.Shoot(KEY_W);
-        //        //tank2.Shoot(KEY_UP);
-        //
-        //        //Updatea tenkove i ciji je red
-        //        tank1.Update();
-        //        tank2.Update();
-        //
-        //        //Graficki prikaz na ekranu
-        //        BeginDrawing();
-        //        ClearBackground(BLACK);
-        //
-        //        //prikaz tenkova
-        //        tank1.Draw();
-        //        tank2.Draw();
-        //
-        //        //prikaz raketa
-        //        tank1.DrawProjectile();
-        //        tank2.DrawProjectile();
-        //
-        //        //prikaz vremena preostalog za trenutacni tenk
-        //        //DrawText(TextFormat("Remaining time is: %.2f", activeTankTurn->GetRemainingTime()), 10, 10, 20, WHITE);
-        //
-        //        //activeTankTurn->EndTurn();
-        //        //activeTankTurn = (activeTankTurn == &tank1) ? &tank2 : &tank1;
-        //        //activeTankTurn->StartTurn();
-        //
-        //        while (!turnTimer.IsTimeUp()) {
-        //            std::this_thread::sleep_for(std::chrono::milliseconds(100));
-        //        }
-        //
-        //        activeTankTurn = (activeTankTurn == 1) ? 2 : 1;
-        //    }
-        //}
-
-        //EndDrawing();
-
-        //GameUpdatePlayFrame();
-
         tank1.UpdateAiming();
         //tank2.UpdateAiming();
 
         BeginDrawing();
-        ClearBackground(BLACK);
+        ClearBackground(SKYBLUE);
+
+        terrain.OnUserUpdate(GetFrameTime());
 
         tank1.TankDraw();
         tank2.TankDraw();
-
+        //TerrainDraw();
+        
 
         EndDrawing();
 
