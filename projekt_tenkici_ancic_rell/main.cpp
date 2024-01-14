@@ -1,296 +1,185 @@
-#include <iostream>
 #include "raylib.h"
-#include "tank.h"
-#include "projectile.h"
-#include "turntimer.h"
 #include "terrain.h"
-#include <cmath>
 
-//void GameMenu(); //trigger za glavni meni
-//void GameSettings(); //trigger za postavke
-//void GameQuit(); //trigger za izlazak iz igre
-//void GameStart(); //trigger za graficko pokretanje igre
-//void GameUpdatePlayFrame(); //trigger za update grafickog crtnja igre ili pokrecanja igra 
-
-const int screenWidth = 800;
-const int screenHeight = 450;
-
-//static void BuildingsGenerate(void);
-//#define MAX_BUILDINGS 15
-//#define BUILDING_RELATIVE_ERROR          30       
-//#define BUILDING_MIN_RELATIVE_HEIGHT     20        
-//#define BUILDING_MAX_RELATIVE_HEIGHT     60        
-//#define BUILDING_MIN_GRAYSCALE_COLOR    120        
-//#define BUILDING_MAX_GRAYSCALE_COLOR    200  
-//
-//typedef struct Building {
-//    Rectangle rectangle;
-//    Color color;
-//}Building;
-//
-//static Building building[MAX_BUILDINGS] = { 0 };
-//
-//static void BuildingsGenerate(void) {
-//    //generiranje horizontalno
-//    int currentWidth = 0;
-//
-//    float relativeWidth = 100 / (100 - BUILDING_RELATIVE_ERROR);
-//    float buildingWidthMean = (screenWidth * relativeWidth / MAX_BUILDINGS) + 1; // We add one to make sure we will cover the whole screen.
-//
-//    int currentHeight = 0;
-//    int grayLevel;
-//
-//    for (int i = 0; i < MAX_BUILDINGS; i++) {
-//        // Horizontal
-//        building[i].rectangle.x = static_cast<float>(currentWidth);
-//        building[i].rectangle.width = static_cast<float>(GetRandomValue(buildingWidthMean * (100 - BUILDING_RELATIVE_ERROR / 2) / 100 + 1, buildingWidthMean * (100 + BUILDING_RELATIVE_ERROR) / 100));
-//
-//        currentWidth += static_cast<int>(building[i].rectangle.width);
-//
-//        // Vertical
-//        currentHeight = GetRandomValue(BUILDING_MIN_RELATIVE_HEIGHT, BUILDING_MAX_RELATIVE_HEIGHT);
-//        building[i].rectangle.y = static_cast<float>(screenHeight - (screenHeight * currentHeight / 100));
-//        building[i].rectangle.height = static_cast<float>(screenHeight * currentHeight / 100 + 1);
-//
-//        // Color
-//        grayLevel = GetRandomValue(BUILDING_MIN_GRAYSCALE_COLOR, BUILDING_MAX_GRAYSCALE_COLOR);
-//        building[i].color = Color{ static_cast<unsigned char>(grayLevel), static_cast<unsigned char>(grayLevel), static_cast<unsigned char>(grayLevel), 255 };
+//class TerrainGenerator {
+//public:
+//    TerrainGenerator() {
+//        map = new unsigned char[nMapWidth * nMapHeight];
 //    }
-//}
 //
-//static void DrawTestRectangle(void) {
-//    // Draw a single rectangle for testing purposes
-//    building[0].rectangle.x = 100;
-//    building[0].rectangle.y = 100;
-//    building[0].rectangle.width = 50;
-//    building[0].rectangle.height = 50;
-//    building[0].color = RED;
-//
-//    DrawRectangleRec(building[0].rectangle, building[0].color);
-//}
-
-class Terrain {
-public:
-    Terrain() {
-        map = nullptr;
-    }
-
-    ~Terrain() {
-        if (map != nullptr) {
-            delete[] map;
-            map = nullptr;
-        }
-    }
-
-    virtual bool OnUserUpdate(float fElaspedTime) {
-        //ponovno generiranje zemlje
-        if (IsKeyPressed(KEY_M))
-            terrainCreate();
-
-        //crtanje neba
-        for (int x = 0; x < screenWidth; x++) {
-            for (int y = 0; y < screenHeight; y++) {
-                switch (map[(y)*terrainWidth + (x)]) {
-                case 0:
-                    DrawPixel(x, y, SKYBLUE);
-                    break;
-                case 1:
-                    DrawPixel(x, y, DARKGREEN);
-                    break;
-                }
-            }
-        }
-
-        return true;
-    }
-    void UpdateTerrain(float fElapsedTime) {
-        OnUserUpdate(fElapsedTime);
-    }
-private:
-    int terrainWidth = 1280;
-    int terrainHeight = 720;
-    unsigned char* map = nullptr;
-
-    virtual bool OnUserCreate() {
-        if (map != nullptr) {
-            delete[] map;
-            map = nullptr;
-        }
-
-        map = new unsigned char[terrainWidth * terrainHeight];
-        memset(map, 0, terrainWidth * terrainHeight * sizeof(unsigned char));
-        terrainCreate();
-
-        return true;
-    }
-
-    virtual bool OnUserUpdate(float fElaspedTime) {
-        //ponovno generiranje zemlje
-        if (IsKeyPressed(KEY_M))
-            terrainCreate();
-        
-        //crtanje neba
-        for (int x = 0; x < screenWidth; x++) {
-            for (int y = 0; y < screenHeight; y++) {
-                switch (map[(y)*terrainWidth + (x)]) {
-                case 0:
-                    DrawPixel(x, y, SKYBLUE);
-                    break;
-                case 1:
-                    DrawPixel(x, y, DARKGREEN);
-                    break;
-                }
-            }
-        }
-
-        return true;
-    }
-
-    void terrainCreate() {
-        float* fSurface = new float[terrainWidth];
-        float* fNoiseSeed = new float[terrainWidth];
-
-        for (int i = 0; i < terrainWidth; i++) {
-            fNoiseSeed[i] = (float)rand() / (float)RAND_MAX;
-        }
-
-        fNoiseSeed[0] = 0.5f;
-        PerlinNoise1D(terrainWidth, fNoiseSeed, 8, 2.0f, fSurface);
-
-        for (int x = 0; x < terrainWidth; x++) {
-            for (int y = 0; y < terrainHeight; y++) {
-                if (y >= fSurface[x] * terrainHeight) {
-                    map[y * terrainWidth + x] = 1;
-                }
-                else {
-                    map[y * terrainWidth + x] = 0;
-                }
-            }
-        }
-        
-        delete[] fSurface;
-        delete[] fNoiseSeed;
-    }
-
-    void PerlinNoise1D(int nCount, float* fSeed, int nOctaves, float fBias, float* fOutput)
-    {
-        //Used 1D Perlin Noise
-        for (int x = 0; x < nCount; x++)
-        {
-            float fNoise = 0.0f;
-            float fScaleAcc = 0.0f;
-            float fScale = 1.0f;
-
-            for (int o = 0; o < nOctaves; o++)
-            {
-                int nPitch = nCount >> o;
-                int nSample1 = (x / nPitch) * nPitch;
-                int nSample2 = (nSample1 + nPitch) % nCount;
-                float fBlend = (float)(x - nSample1) / (float)nPitch;
-                float fSample = (1.0f - fBlend) * fSeed[nSample1] + fBlend * fSeed[nSample2];
-                fScaleAcc += fScale;
-                fNoise += fSample * fScale;
-                fScale = fScale / fBias;
-            }
-
-            //Scale to seed range
-            fOutput[x] = fNoise / fScaleAcc;
-        }
-    }
-};
-
-//const int terrainWidth = screenWidth;
-//const int terrainHeight = screenHeight / 2;
-//
-//float perlinNoise[terrainWidth];
-//
-//void TerrainGenerate() {
-//    for (int i = 0; i < terrainWidth; i++) {
-//        perlinNoise[i] = (float)GetRandomValue(0, terrainHeight) / (float)terrainHeight;
+//    ~TerrainGenerator() {
+//        delete[] map;
 //    }
-//}
 //
-//void TerrainDraw() {
-//    for (int i = 0; i < terrainWidth - 1; i++) {
-//        DrawLine(i, screenHeight - perlinNoise[i] * screenHeight, i + 1, screenHeight - perlinNoise[i + 1] * screenHeight, GREEN);
+//    virtual bool OnUserUpdate(float fElapsedTime) {
+//        // Generating new random map with M
+//        if (IsKeyReleased(KEY_M))
+//            CreateMap();
+//
+//        // Scrolling after mouse hits edge of screen
+//        float fMapScrollSpeed = 400.0f;
+//        // Povecan area registracije da je mis na rubu ekrana
+//        float fScrollArea = 50.0f;
+//        // Smoothing
+//        float fSpeedX = 0.0f;
+//        float fSpeedY = 0.0f;
+//        // X
+//        if (GetMouseX() < fScrollArea) {
+//            fSpeedX = (fScrollArea - GetMouseX()) / fScrollArea * fMapScrollSpeed;
+//            fCameraPosX -= fSpeedX * fElapsedTime;
+//        }
+//        if (GetMouseX() > ScreenWidth - fScrollArea) {
+//            fSpeedX = (GetMouseX() - (ScreenWidth - fScrollArea)) / fScrollArea * fMapScrollSpeed;
+//            fCameraPosX += fSpeedX * fElapsedTime;
+//        }
+//        // Y
+//        if (GetMouseY() < fScrollArea) {
+//            fSpeedY = (fScrollArea - GetMouseY()) / fScrollArea * fMapScrollSpeed;
+//            fCameraPosY -= fSpeedY * fElapsedTime;
+//        }
+//        if (GetMouseY() > ScreenHeight - fScrollArea) {
+//            fSpeedY = (GetMouseY() - (ScreenHeight - fScrollArea)) / fScrollArea * fMapScrollSpeed;
+//            fCameraPosY += fSpeedY * fElapsedTime;
+//        }
+//
+//        // Clamp map boundaries
+//        if (fCameraPosX < 0) fCameraPosX = 0;
+//        if (fCameraPosX >= nMapWidth - ScreenWidth) fCameraPosX = nMapWidth - ScreenWidth;
+//        if (fCameraPosY < 0) fCameraPosY = 0;
+//        if (fCameraPosY >= nMapHeight - ScreenHeight) fCameraPosY = nMapHeight - ScreenHeight;
+//
+//        return true;
 //    }
-//}
+//
+//    void CreateMap() {
+//        // Used 1D Perlin Noise
+//        float* fSurface = new float[nMapWidth];
+//        float* fNoiseSeed = new float[nMapWidth];
+//
+//        // Populate with noise
+//        for (int i = 0; i < nMapWidth; i++)
+//            fNoiseSeed[i] = (float)rand() / (float)RAND_MAX;
+//
+//        // Clamp noise to half way up screen
+//        fNoiseSeed[0] = 0.5f;
+//
+//        // Generate 1D map
+//        PerlinNoise1D(nMapWidth, fNoiseSeed, 8, 2.0f, fSurface);
+//
+//        // Fill 2D map based on adjacent 1D map
+//        for (int x = 0; x < nMapWidth; x++)
+//            for (int y = 0; y < nMapHeight; y++) {
+//                if (y >= fSurface[x] * nMapHeight)
+//                    map[y * nMapWidth + x] = 1;
+//                else
+//                    map[y * nMapWidth + x] = 0;
+//            }
+//
+//        // Clean up!
+//        delete[] fSurface;
+//        delete[] fNoiseSeed;
+//    }
+//
+//    // Taken from Perlin Noise Video https://youtu.be/6-0UaeJBumA
+//    void PerlinNoise1D(int nCount, float* fSeed, int nOctaves, float fBias, float* fOutput) {
+//        // Used 1D Perlin Noise
+//        for (int x = 0; x < nCount; x++) {
+//            float fNoise = 0.0f;
+//            float fScaleAcc = 0.0f;
+//            float fScale = 1.0f;
+//
+//            for (int o = 0; o < nOctaves; o++) {
+//                int nPitch = nCount >> o;
+//                int nSample1 = (x / nPitch) * nPitch;
+//                int nSample2 = (nSample1 + nPitch) % nCount;
+//                float fBlend = (float)(x - nSample1) / (float)nPitch;
+//                float fSample = (1.0f - fBlend) * fSeed[nSample1] + fBlend * fSeed[nSample2];
+//                fScaleAcc += fScale;
+//                fNoise += fSample * fScale;
+//                fScale = fScale / fBias;
+//            }
+//
+//            // Scale to seed range
+//            fOutput[x] = fNoise / fScaleAcc;
+//        }
+//    }
+//
+//    void DrawTerrain() {
+//        for (int x = 0; x < nMapWidth; x++) {
+//            for (int y = 0; y < nMapHeight; y++) {
+//
+//                // Porjvera je li unutar bounds STARO NE TREBA AKO JE nMapHeight 600
+//                //int mapX = static_cast<int>(fCameraPosX) + x;
+//                //int mapY = static_cast<int>(fCameraPosY) + y;
+//
+//                // Provjera je li unutar bounds
+//                //if (mapX >= 0 && mapX < nMapWidth && mapY >= 0 && mapY < nMapHeight) {
+//                //    if (map[(y + (int)fCameraPosY) * nMapWidth + (x + (int)fCameraPosX)]) {
+//                //        // Draw terrain block at (x, y)
+//                //        DrawRectangle(x, y, 1, 1, DARKGREEN);
+//                //    }
+//                //}
+//
+//                if (map[(y + (int)fCameraPosY) * nMapWidth + (x + (int)fCameraPosX)] == 1) {
+//                    // Draw terrain block at (x, y)
+//                    DrawRectangle(x, y, 1, 1, DARKGREEN);
+//                }
+//            }
+//        }
+//    }
+//
+//private:
+//    // Velicina prozora
+//    const int ScreenWidth = 800;
+//    const int ScreenHeight = 600;
+//
+//    // Velicina terraina
+//    int nMapWidth = 1600;
+//    int nMapHeight = 600;
+//    unsigned char* map = nullptr;
+//
+//    // Default pozicije kamera
+//    float fCameraPosX = 0.0f;
+//    float fCameraPosY = 0.0f;
+//};
 
-int main(void)
+int main()
 {
-    //REZOLUCIJa ekrana
+    // Initialization
+    const int screenWidth = 800;
+    const int screenHeight = 600;
 
-    InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
+    InitWindow(screenWidth, screenHeight, "Random Terrain Generation");
 
-    //GameStart();
+    TerrainGenerator terrain;
+    terrain.CreateMap();
 
-    //Kreiranje tenka
-
-    Tank tank1({ screenWidth / 4 - 20, screenHeight / 2 - 20 }, { 40, 40 }, 
-        {0, 0}, 0, 0,
-        {0, 0}, 0, 0,
-        {0, 0}, false, true, YELLOW);
-    Tank tank2({ 3 * screenWidth / 4 - 20, screenHeight / 2 - 20 }, { 40, 40 },
-        { 0, 0 }, 0, 0,
-        { 0, 0 }, 0, 0,
-        { 0, 0 }, false, true, GREEN);
-
-    //BuildingsGenerate();
-
-    //TerrainGenerate();
-    //Terrain terrain;
-
-    //Staro Kreiranje tenka
-    //Tank tank1(screenWidth / 4 - 20, screenHeight / 2 - 20, YELLOW, 200.0f, 100.0f, 400.0f, 3);
-    //Tank tank2(3 * screenWidth / 4 - 20, screenHeight / 2 - 20, BLUE, 200.0f, 100.0f, 400.0f, 3);
-    //Tank* activeTankTurn = &tank1;
-    //int activeTankTurn = 1;
-    //TurnTimer turnTimer(30.0);
-
-    SetTargetFPS(60);
-
-    while (!WindowShouldClose())
+    while (!WindowShouldClose()) // Main game loop
     {
-        //BuildingsGenerate();
-        
-        //while(tank1.alive)
+        // Update
+        float fElapsedTime = GetFrameTime();
 
-        tank1.UpdateAiming();
-        //tank2.UpdateAiming();
+        // User Done Updates
+        terrain.OnUserUpdate(fElapsedTime);
 
+        // Old random map regeneration
+        //if (IsKeyReleased(KEY_M))
+        //    terrain.CreateMap();
+
+        // Draw
         BeginDrawing();
+
         ClearBackground(SKYBLUE);
 
-        //DrawTestRectangle();
+        terrain.DrawTerrain();
 
-        //terrain.OnUserUpdate(GetFrameTime());
-
-        tank1.TankDraw();
-        tank2.TankDraw();
-        //TerrainDraw();
+        DrawFPS(10, 10);
 
         EndDrawing();
-
     }
 
+    // De-Initialization
     CloseWindow();
 
     return 0;
 }
-
-//void GameStart() {
-//    Tank tank1();
-//    Tank tank2();
-//
-//    //GenerateTerrain();
-//
-//}
-//
-//void GameUpdateStartPlayFrame() {
-//    BeginDrawing();
-//    ClearBackground(BLACK);
-//    
-//    for (int i = 0; i < 2; i++) {
-//        
-//    }
-//}
