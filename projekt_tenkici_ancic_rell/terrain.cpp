@@ -141,7 +141,7 @@ void TerrainGenerator::DrawTank(float fOffsetX, float fOffsetY) {
             float terrainHeight = fSurface[terrainX] * nMapHeight;
             tankY = terrainHeight;
         }
-        
+
     }
     DrawRectangle(static_cast<int>(tankX - fOffsetX), static_cast<int>(tankY - fOffsetY), 20, 20, RED);
 }
