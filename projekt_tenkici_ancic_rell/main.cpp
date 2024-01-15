@@ -362,8 +362,8 @@ void Tank::UpdateShotPower(float fElapsedTime) {
 
 void Tank::DrawChargingBar(float barWidth) {
     if (chargingShot) {
-        DrawRectangle(static_cast<int>(x - 5.0f - barWidth / 2.0f), static_cast<int>(y + barOffsetY),
-            static_cast<int>(barWidth * (shotPower / maxShotPower)), 10, RED);
+        DrawRectangle(static_cast<int>(x + 15.0f - barWidth / 2.0f), static_cast<int>(y - 15.0f + barOffsetY),
+            static_cast<int>(barWidth * (shotPower / maxShotPower)), 5, RED);
     }
 }
 
