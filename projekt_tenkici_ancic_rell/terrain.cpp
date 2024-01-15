@@ -8,6 +8,7 @@ TerrainGenerator::TerrainGenerator() {
 
 TerrainGenerator::~TerrainGenerator() {
     delete[] map;
+    delete[] fSurface;
 }
 
 bool TerrainGenerator::OnUserUpdate(float fElapsedTime) {
@@ -51,6 +52,8 @@ bool TerrainGenerator::OnUserUpdate(float fElapsedTime) {
 }
 
 void TerrainGenerator::CreateMap() {
+    delete[] fSurface;
+
     // Used 1D Perlin Noise
     float* fSurface = new float[nMapWidth];
     float* fNoiseSeed = new float[nMapWidth];
@@ -73,6 +76,7 @@ void TerrainGenerator::CreateMap() {
             else
                 map[y * nMapWidth + x] = 0;
         }
+    fSurface = new float[nMapWidth];
 
     // Clean up!
     delete[] fSurface;
@@ -110,7 +114,7 @@ void TerrainGenerator::DrawTerrain() {
             // Porjvera je li unutar bounds STARO NE TREBA AKO JE nMapHeight 600
             //int mapX = static_cast<int>(fCameraPosX) + x;
             //int mapY = static_cast<int>(fCameraPosY) + y;
-
+            // 
             // Provjera je li unutar bounds
             //if (mapX >= 0 && mapX < nMapWidth && mapY >= 0 && mapY < nMapHeight) {
             //    if (map[(y + (int)fCameraPosY) * nMapWidth + (x + (int)fCameraPosX)]) {
@@ -125,4 +129,19 @@ void TerrainGenerator::DrawTerrain() {
             }
         }
     }
+}
+
+void TerrainGenerator::DrawTank(float fOffsetX, float fOffsetY) {
+    float rectX = 50.0f;    // Adjust the X position as needed
+    float rectY = 0.0f;     // Adjust the Y position as needed
+
+    int terrainX = static_cast<int>(fCameraPosX + tankX);
+    if (terrainX >= 0 && terrainX < nMapWidth) {
+        if (fSurface != nullptr) {
+            float terrainHeight = fSurface[terrainX] * nMapHeight;
+            tankY = terrainHeight;
+        }
+        
+    }
+    DrawRectangle(static_cast<int>(tankX - fOffsetX), static_cast<int>(tankY - fOffsetY), 20, 20, RED);
 }
