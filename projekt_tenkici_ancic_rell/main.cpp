@@ -168,6 +168,14 @@ public:
     void Draw(float offsetX, float offsetY);
     void Update(float fElapsedTime);
 
+    virtual bool OnUserUpdate(float fElapsedTime);
+    float fShootingAngle = 0.0f;
+    void SetCrosshair(float crosshairX, float crosshairY);
+    void DrawCrosshair(float x, float y, float size);
+    void DrawShotPowerBar(float offsetX, float offsetY);
+    void UpdateShotPower(float fElapsedTime);
+    void DrawChargingBar(float barWidth);
+
 private:
     int nMapWidth = 1200;
     int nMapHeight = 600;
@@ -177,6 +185,12 @@ private:
     bool bStable;
     Texture2D tankTexture;
     TerrainGenerator& terrain;
+    float crosshairX;
+    float crosshairY;
+    float shotPower;
+    bool chargingShot;
+    float maxShotPower = 5.0f;
+    float barOffsetY = -25.0f;
     //int nBounceBeforeDeath;
     //bool bDead;
 };
@@ -185,9 +199,44 @@ Tank::Tank(float initX, float initY, TerrainGenerator& terrain)
     : x(initX), y(initY), terrain(terrain), physics(),
     tankTexture(LoadTexture("tankblue2.png")), bStable(true) {}
 
+bool Tank::OnUserUpdate(float fElapsedTime)
+{
+    if (IsKeyDown(KEY_W)) {
+        fShootingAngle -= 1.0f * fElapsedTime;
+        if (fShootingAngle < -PI) {
+            fShootingAngle += 2.0f * PI;
+        }
+    }
+
+    if (IsKeyDown(KEY_S)) {
+        fShootingAngle += 1.0f * fElapsedTime;
+        if (fShootingAngle > PI) {
+            fShootingAngle -= 2.0f * PI;
+        }
+    }
+
+    float crosshairDistance = 50.0f; // Adjust this value based on your needs
+    SetCrosshair(x + cosf(fShootingAngle) * crosshairDistance, y + sinf(fShootingAngle) * crosshairDistance);
+    if (IsKeyDown(KEY_SPACE)) {
+        chargingShot = true;
+    }
+    else {
+        chargingShot = false;
+        shotPower = 0.0f;
+    }
+
+    // Dodajte poziv funkcije za ažuriranje snage pucanja
+    UpdateShotPower(fElapsedTime);
+
+    return true;
+}
+
 void Tank::Draw(float offsetX, float offsetY) {
     // Draw the tank at the correct position
     DrawTexture(tankTexture, static_cast<int>(x - offsetX), static_cast<int>(y - offsetY), WHITE);
+
+    DrawCrosshair(crosshairX - offsetX, crosshairY - offsetY, 20);
+    DrawChargingBar(50.0f);
 
     // Testni objekti
     //DrawCircle(static_cast<int>(x - offsetX), static_cast<int>(y - offsetY), 10, WHITE);
@@ -290,6 +339,36 @@ void Tank::Update(float fElapsedTime) {
     }
 }
 
+void Tank::SetCrosshair(float crosshairX, float crosshairY)
+{
+    this->crosshairX = crosshairX;
+    this->crosshairY = crosshairY;
+}
+
+void Tank::DrawCrosshair(float offsetX, float offsetY, float size) {
+    DrawLine(crosshairX - offsetX - 10, crosshairY - offsetY, crosshairX - offsetX + 10, crosshairY - offsetY, RED);
+    DrawLine(crosshairX - offsetX, crosshairY - offsetY - 10, crosshairX - offsetX, crosshairY - offsetY + 10, RED);
+}
+
+void Tank::UpdateShotPower(float fElapsedTime) {
+    if (chargingShot && shotPower < maxShotPower) {
+        shotPower += fElapsedTime;
+        // Ograničite maksimalnu snagu pucanja
+        if (shotPower > maxShotPower) {
+            shotPower = maxShotPower;
+        }
+    }
+}
+
+void Tank::DrawChargingBar(float barWidth) {
+    if (chargingShot) {
+        DrawRectangle(static_cast<int>(x - 5.0f - barWidth / 2.0f), static_cast<int>(y + barOffsetY),
+            static_cast<int>(barWidth * (shotPower / maxShotPower)), 10, RED);
+    }
+}
+
+// EXPLOSION BOOM
+
 void Explosion(int nMapWidth, int nMapHeight, unsigned char* map, float fWorldX, float fWorldY, float fRadius) {
     auto CircleBresenham = [&](int xc, int yc, int r) {
         // Ovo je sve sa wikipedia
@@ -346,6 +425,7 @@ int main()
 
         // User Done Updates
         terrain.OnUserUpdate(fElapsedTime);
+        tank.OnUserUpdate(fElapsedTime);
         tank.Update(deltaTime);
         //debris.Update(fElapsedTime);
 
@@ -366,6 +446,10 @@ int main()
             // Trigger an explosion at the mouse position
             Explosion(terrain.GetMapWidth(), terrain.GetMapHeight(), terrain.GetMap(), worldMouseX, worldMouseY, 10.0f);
         }
+
+        tank.DrawCrosshair(0.0f, 0.0f, 20);
+        tank.DrawChargingBar(50.0f);    // Postavi sirinu trake prema potrebi
+
 
         //for (auto& d : debris) {
         //    d.Update(fElapsedTime);
