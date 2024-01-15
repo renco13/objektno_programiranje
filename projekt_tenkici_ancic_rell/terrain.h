@@ -28,7 +28,7 @@ private:
     const int ScreenHeight = 600;
 
     // Velicina terraina
-    int nMapWidth = 1600;
+    int nMapWidth = 1200;
     int nMapHeight = 600;
     unsigned char* map = nullptr;
 
