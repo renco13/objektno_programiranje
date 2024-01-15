@@ -20,7 +20,10 @@ public:
     }
 
     float GetCameraPosX() const { return fCameraPosX; }
+    float GetCameraPosY() const { return fCameraPosY; }
     const float* GetSurface() const { return fSurface; }
+    int GetMapWidth() const { return nMapWidth; }
+    int GetMapHeight() const { return nMapHeight; }
 
 private:
     // Velicina prozora
