@@ -124,8 +124,12 @@ void TerrainGenerator::DrawTerrain() {
             //}
 
             if (map[(y + (int)fCameraPosY) * nMapWidth + (x + (int)fCameraPosX)] == 1) {
-                // Draw terrain block at (x, y)
-                DrawRectangle(x, y, 1, 1, DARKGREEN);
+                // NEW Draw terrain block at (x, y) with color swap green, darkgreen
+                Color terrainColor = (x + y) % 2 == 0 ? DARKGREEN : GREEN;
+                DrawRectangle(x, y, 1, 1, terrainColor);
+
+                // OLD Draw terrain block at (x, y) with just darkgreen
+                //DrawRectangle(x, y, 1, 1, DARKGREEN);  
             }
         }
     }
